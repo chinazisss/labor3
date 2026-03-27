@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Каталог путешествий | Этап 4</title>
+    <title>Каталог путешествий | Этап 5 (Добавляем форму добавления путешествия крч) </title>
     <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -56,13 +56,38 @@
         ];
 
         const App = () => {
-            const [travels] = useState(initialTravels);
+            const [travels, setTravels] = useState(initialTravels);
             const [selectedCountry, setSelectedCountry] = useState("all");
+            const [newCountry, setNewCountry] = useState("");
+            const [newName, setNewName] = useState("");
+            const [newDesc, setNewDesc] = useState("");
+            const [formError, setFormError] = useState("");
 
             const uniqueCountries = [...new Set(travels.map(t => t.country))];
             const filteredTravels = selectedCountry === "all"
                 ? travels
                 : travels.filter(t => t.country === selectedCountry);
+
+            const handleAddTravel = (e) => {
+                e.preventDefault();
+                if (!newCountry.trim() || !newName.trim() || !newDesc.trim()) {
+                    setFormError("Заполните все поля: страна, название и описание");
+                    return;
+                }
+                setFormError("");
+                const newId = travels.length > 0 ? Math.max(...travels.map(t => t.id)) + 1 : 1;
+                const newTravel = {
+                    id: newId,
+                    country: newCountry.trim(),
+                    name: newName.trim(),
+                    description: newDesc.trim(),
+                    likes: 0
+                };
+                setTravels([...travels, newTravel]);
+                setNewCountry("");
+                setNewName("");
+                setNewDesc("");
+            };
 
             return (
                 <div className="app-wrapper">
@@ -80,6 +105,22 @@
                                 ))}
                             </select>
                         </div>
+                        <form onSubmit={handleAddTravel} className="add-form">
+                            <div className="field">
+                                <label>Страна *</label>
+                                <input type="text" value={newCountry} onChange={(e) => setNewCountry(e.target.value)} placeholder="Например: Испания" />
+                            </div>
+                            <div className="field">
+                                <label>Название *</label>
+                                <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Название тура" />
+                            </div>
+                            <div className="field">
+                                <label>Краткое описание *</label>
+                                <input type="text" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} placeholder="Что вас ждет?" />
+                            </div>
+                            <button type="submit">Добавить</button>
+                        </form>
+                        {formError && <div className="error-msg">{formError}</div>}
                     </div>
                     <div className="cards-grid">
                         {filteredTravels.map(travel => (
