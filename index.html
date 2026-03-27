@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Каталог путешествий | Этап 5 (Добавляем форму добавления путешествия крч) </title>
+    <title>Каталог путешествий </title>
     <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -68,6 +68,14 @@
                 ? travels
                 : travels.filter(t => t.country === selectedCountry);
 
+            const handleLike = (id) => {
+                setTravels(prevTravels =>
+                    prevTravels.map(travel =>
+                        travel.id === id ? { ...travel, likes: travel.likes + 1 } : travel
+                    )
+                );
+            };
+
             const handleAddTravel = (e) => {
                 e.preventDefault();
                 if (!newCountry.trim() || !newName.trim() || !newDesc.trim()) {
@@ -131,7 +139,7 @@
                                     <div className="travel-desc">{travel.description}</div>
                                 </div>
                                 <div className="like-section">
-                                    <button className="like-btn">Нравится</button>
+                                    <button className="like-btn" onClick={() => handleLike(travel.id)}>Нравится</button>
                                     <span className="like-count">Лайков: {travel.likes}</span>
                                 </div>
                             </div>
