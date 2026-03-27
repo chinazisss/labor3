@@ -267,3 +267,40 @@
 
 <script type="text/babel">
     const { useState } = React;
+
+    const initialTravels = [
+        { id: 1, country: "Франция", name: "Романтический Париж", description: "Эйфелева башня, круассаны и атмосфера любви.", likes: 0 },
+        { id: 2, country: "Италия", name: "Венецианские каналы", description: "Гондолы, карнавал и лучшая пицца.", likes: 0 },
+        { id: 3, country: "Япония", name: "Токийское приключение", description: "Неоновая улица, суши и традиционные храмы.", likes: 0 }
+    ];
+
+    const App = () => {
+        const [travels] = useState(initialTravels);
+
+        return (
+            <div className="app-wrapper">
+                <header>
+                    <h1>Каталог путешествий</h1>
+                    <div className="sub">Открой мир — найди идеальное приключение</div>
+                </header>
+                <div className="cards-grid">
+                    {travels.map(travel => (
+                        <div key={travel.id} className="travel-card">
+                            <div className="card-content">
+                                <div className="country-badge">{travel.country}</div>
+                                <div className="travel-title">{travel.name}</div>
+                                <div className="travel-desc">{travel.description}</div>
+                            </div>
+                            <div className="like-section">
+                                <button className="like-btn">Нравится</button>
+                                <span className="like-count">{travel.likes}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
