@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Каталог путешествий | Этап 3</title>
+    <title>Каталог путешествий | Этап 4</title>
     <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -57,6 +57,12 @@
 
         const App = () => {
             const [travels] = useState(initialTravels);
+            const [selectedCountry, setSelectedCountry] = useState("all");
+
+            const uniqueCountries = [...new Set(travels.map(t => t.country))];
+            const filteredTravels = selectedCountry === "all"
+                ? travels
+                : travels.filter(t => t.country === selectedCountry);
 
             return (
                 <div className="app-wrapper">
@@ -64,8 +70,19 @@
                         <h1>Каталог путешествий</h1>
                         <div className="sub">Открой мир — найди идеальное приключение</div>
                     </header>
+                    <div className="controls">
+                        <div className="filter-area">
+                            <span className="filter-label">Фильтр по стране:</span>
+                            <select value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
+                                <option value="all">Все страны</option>
+                                {uniqueCountries.map(country => (
+                                    <option key={country} value={country}>{country}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <div className="cards-grid">
-                        {travels.map(travel => (
+                        {filteredTravels.map(travel => (
                             <div key={travel.id} className="travel-card">
                                 <div className="card-content">
                                     <div className="country-badge">{travel.country}</div>
