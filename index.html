@@ -2,19 +2,268 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог путешествий</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Каталог путешествий | React App</title>
     <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: #eef2f7;
+            padding: 2rem 1.5rem;
+        }
+
+        .app-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f3e5c;
+            letter-spacing: -0.3px;
+            border-left: 5px solid #2c7da0;
+            padding-left: 1.2rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sub {
+            color: #4b6f8c;
+            margin-bottom: 2rem;
+            padding-left: 1.8rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .controls {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(44, 125, 160, 0.2);
+        }
+
+        .filter-area {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px dashed #cbdbe0;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            background: #e9f0f5;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: #1f5e7e;
+        }
+
+        select {
+            background: #f9fbfd;
+            border: 1px solid #bdd3e4;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #0a2f44;
+            cursor: pointer;
+            transition: 0.2s;
+            outline: none;
+        }
+
+        select:hover {
+            border-color: #2c7da0;
+            background: white;
+        }
+
+        .add-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .field {
+            flex: 1 1 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .field label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #2c7da0;
+            letter-spacing: 0.4px;
+        }
+
+        .field input {
+            background: #fefefe;
+            border: 1px solid #cfdfea;
+            padding: 0.6rem 1rem;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 2px rgba(44, 125, 160, 0.2);
+        }
+
+        button {
+            background: #2c7da0;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.6rem 1.3rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        button:hover {
+            background: #1f5e7e;
+            transform: translateY(-1px);
+        }
+
+        .error-msg {
+            color: #c44536;
+            font-size: 0.75rem;
+            margin-top: 0.6rem;
+            background: #fff2ef;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .travel-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            transition: all 0.25s;
+            box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .travel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 28px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-content {
+            padding: 1.3rem 1.5rem 1rem;
+            flex: 1;
+        }
+
+        .country-badge {
+            display: inline-block;
+            background: #e1ecf4;
+            color: #1f5e7e;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.3px;
+        }
+
+        .travel-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f3e5c;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .travel-desc {
+            color: #4a627a;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin: 0.7rem 0 1rem;
+        }
+
+        .like-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid #e9edf2;
+            padding: 0.9rem 1.5rem 1.2rem;
+            background: #fafcff;
+        }
+
+        .like-btn {
+            background: #ffe8e6;
+            color: #bc4e2c;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.1s;
+            box-shadow: none;
+        }
+
+        .like-btn:hover {
+            background: #ffdad5;
+            transform: scale(0.98);
+        }
+
+        .like-count {
+            font-weight: 700;
+            background: #eef2fa;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: #2c7da0;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 3rem;
+            background: #f9fafc;
+            border-radius: 2rem;
+            color: #6c86a3;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #7f98af;
+        }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel">
-        const App = () => {
-            return <h1>Каталог путешествий</h1>;
-        };
-        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-    </script>
-</body>
-</html>
+<div id="root"></div>
+
+<script type="text/babel">
+    const { useState } = React;
